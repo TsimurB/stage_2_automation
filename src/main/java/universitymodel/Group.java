@@ -8,8 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Group {
+
     private List<Student> students = new ArrayList<>();
-    private String groupId;
+    private final String groupId;
 
     public Group() {
         groupId = UUID.randomUUID().toString();

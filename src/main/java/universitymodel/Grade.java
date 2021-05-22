@@ -1,8 +1,9 @@
 package universitymodel;
 
 public class Grade {
-    private int grade;
-    private Subject subject;
+
+    private final int grade;
+    private final Subject subject;
 
     public Grade(Subject subject, int grade) {
         this.subject = subject;

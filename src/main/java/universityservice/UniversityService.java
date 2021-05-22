@@ -6,7 +6,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class UniversityService {
+
     private static final int NUMBER_OF_SUBJECTS = 6;
     private static final int NUMBER_OF_STUDENTS = 10;
     private static final int NUMBER_OF_FACULTIES = 3;
@@ -26,7 +28,7 @@ public class UniversityService {
                         )));
 
         Student student = university.getFaculties().get(0).getGroups().get(0).getStudents().get(0);
-        System.out.println(calculateAvgAllSubjects(university, student));
+        System.out.println(calculateAvgAllSubjects(student));
         System.out.println(calculateAvgConcrete(university, university.getFaculties().get(0),
                 university.getFaculties().get(0).getGroups().get(0),
                 university.getFaculties().get(0).getGroups().get(0).getStudents().get(0).getSubjects().get(0)));
@@ -34,39 +36,38 @@ public class UniversityService {
 
         try {
             simulateExceptionForIncorrectGrade(university);
-        } catch (ArithmeticException exception){
+        } catch (ArithmeticException exception) {
             System.out.println("ArithmeticException was caught!");
         }
 
         try {
             simulateExceptionForEmptySubjects(university);
-        } catch (NoSuchElementException exception){
+        } catch (NoSuchElementException exception) {
             System.out.println("NoSuchElementException was caught for simulateExceptionForEmptySubjects!");
         }
 
         try {
             simulateExceptionForEmptyStudents(university);
-        } catch (NoSuchElementException exception){
+        } catch (NoSuchElementException exception) {
             System.out.println("NoSuchElementException was caught for simulateExceptionForEmptyStudents!");
         }
 
         try {
             simulateExceptionForEmptyGroups(university);
-        } catch (NoSuchElementException exception){
+        } catch (NoSuchElementException exception) {
             System.out.println("NoSuchElementException was caught for simulateExceptionForEmptyGroups!");
         }
 
         try {
             simulateExceptionForEmptyFaculties();
-        } catch (NoSuchElementException exception){
+        } catch (NoSuchElementException exception) {
             System.out.println("NoSuchElementException was caught for simulateExceptionForEmptyFaculties!");
         }
     }
 
-    private static double calculateAvgAllSubjects(University university, Student student) {
-        double averageAllSubjects = student.getGrades().stream().mapToInt(Grade::getGrade)
+    private static double calculateAvgAllSubjects(Student student) {
+        return student.getGrades().stream().mapToInt(Grade::getGrade)
                 .average().getAsDouble();
-        return averageAllSubjects;
     }
 
     private static double calculateAvgConcrete(University university, Faculty faculty, Group group, Subject subject) {
@@ -74,7 +75,7 @@ public class UniversityService {
                 .filter(f -> f.getFacultyId().equals(faculty.getFacultyId()))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(String.format("Faculty with ID %s is not find", faculty.getFacultyId())));
-        Group group1 = faculty.getGroups().stream()
+        Group group1 = faculty1.getGroups().stream()
                 .filter(g -> g.getGroupId().equals(group.getGroupId()))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(String.format("Group with ID %s is not find", group.getGroupId())));

@@ -3,9 +3,8 @@ package universitymodel;
 import java.util.UUID;
 
 public class Subject {
-    //    private Student student;
 
-    private String subjectId;
+    private final String subjectId;
 
     public Subject() {
         subjectId = UUID.randomUUID().toString();

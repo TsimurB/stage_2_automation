@@ -2,14 +2,14 @@ package universitymodel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Faculty {
+
     private List<Group> groups = new ArrayList<>();
-    private String facultyId;
+    private final String facultyId;
 
     public Faculty() {
         facultyId = UUID.randomUUID().toString();

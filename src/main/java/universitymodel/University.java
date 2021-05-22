@@ -21,6 +21,7 @@ public class University {
                 .limit(numberOfSubject)
                 .collect(Collectors.toList());
     }
+
     public List<Faculty> getFaculties() {
         return faculties;
     }
