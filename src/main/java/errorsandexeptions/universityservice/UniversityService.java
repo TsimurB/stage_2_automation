@@ -1,6 +1,6 @@
-package universityservice;
+package errorsandexeptions.universityservice;
 
-import universitymodel.*;
+import errorsandexeptions.universitymodel.*;
 
 import java.util.Collection;
 import java.util.List;

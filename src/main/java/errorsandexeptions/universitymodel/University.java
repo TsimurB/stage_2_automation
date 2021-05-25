@@ -1,4 +1,4 @@
-package universitymodel;
+package errorsandexeptions.universitymodel;
 
 import java.util.ArrayList;
 import java.util.List;
