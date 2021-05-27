@@ -66,9 +66,12 @@ public class UniversityService {
     }
 
     private static double calculateAvgAllSubjects(Student student) {
-        return student.getGrades().stream().mapToInt(Grade::getGrade)
-                .average().getAsDouble();
+        return student.getGrades().stream()
+                .mapToInt(Grade::getGrade)
+                .average()
+                .getAsDouble();
     }
+
 
     private static double calculateAvgConcrete(University university, Faculty faculty, Group group, Subject subject) {
         Faculty faculty1 = university.getFaculties().stream()
@@ -102,34 +105,32 @@ public class UniversityService {
                 .getAsDouble();
     }
 
-    public static void simulateExceptionForIncorrectGrade(University university) throws ArithmeticException {
+    public static void simulateExceptionForIncorrectGrade(University university) {
+        university.createFaculties(NUMBER_OF_FACULTIES)
+                .forEach(faculty -> faculty.createGroups(NUMBER_OF_GROUPS)
+                        .forEach(group -> group.assignStudents(NUMBER_OF_STUDENTS)
+                                .forEach(student -> {
+                                            student.assignSubject(university.createSubject(100));
+                                            student.getSubjects()
+                                                    .forEach(subject -> student.giveGrade(subject, getRandomGrade(-100, 100)));
+                                        }
+                                )));
+    }
+
+    public static void simulateExceptionForEmptySubjects(University university) {
         university.createFaculties(NUMBER_OF_FACULTIES).forEach(faculty -> faculty
                 .createGroups(NUMBER_OF_GROUPS)
                 .forEach(group -> group.assignStudents(NUMBER_OF_STUDENTS)
-                        .forEach(student -> {
-                                    student.assignSubject(university.createSubject(100));
-                                    student.getSubjects()
-                                            .forEach(subject -> student.giveGrade(subject, getRandomGrade(-100, 100)));
-                                }
-                        )));
+                        .forEach(Student::getSubjects)));
     }
 
-    public static void simulateExceptionForEmptySubjects(University university) throws NoSuchElementException {
-        university.createFaculties(NUMBER_OF_FACULTIES).forEach(faculty -> faculty
-                .createGroups(NUMBER_OF_GROUPS)
-                .forEach(group -> group.assignStudents(NUMBER_OF_STUDENTS)
-                        .forEach(student -> student.getSubjects()
-                                .forEach(subject -> student.giveGrade(subject, getRandomGrade(-100, 100)))
-                        )));
-    }
-
-    public static void simulateExceptionForEmptyStudents(University university) throws NoSuchElementException {
+    public static void simulateExceptionForEmptyStudents(University university) {
         university.createFaculties(NUMBER_OF_FACULTIES).forEach(faculty -> faculty
                 .createGroups(NUMBER_OF_GROUPS)
                 .forEach(Group::getStudents));
     }
 
-    public static void simulateExceptionForEmptyGroups(University university) throws NoSuchElementException {
+    public static void simulateExceptionForEmptyGroups(University university) {
         university.createFaculties(NUMBER_OF_FACULTIES).forEach(faculty -> faculty
                 .getGroups()
                 .stream()
@@ -137,7 +138,7 @@ public class UniversityService {
                 .orElseThrow(() -> new NoSuchElementException("List of groups is empty")));
     }
 
-    public static void simulateExceptionForEmptyFaculties() throws NoSuchElementException {
+    public static void simulateExceptionForEmptyFaculties() {
         new University().getFaculties()
                 .stream()
                 .findFirst()
