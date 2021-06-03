@@ -1,5 +1,7 @@
 package universitymodel;
 
+import exception.BaseException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +30,13 @@ public class Faculty {
 
     public List<Group> getGroups() {
         return groups;
+    }
+
+    public static class FacultyException extends BaseException {
+
+        public FacultyException(String message) {
+            super(message);
+        }
     }
 
 }

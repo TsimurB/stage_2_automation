@@ -4,15 +4,19 @@ import universitymodel.*;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.function.Function;
 
-@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class UniversityService {
 
     private static final int NUMBER_OF_SUBJECTS = 6;
     private static final int NUMBER_OF_STUDENTS = 10;
     private static final int NUMBER_OF_FACULTIES = 3;
     private static final int NUMBER_OF_GROUPS = 4;
+    private static final Function<University, Faculty> randomFacultyGenerator = university -> getRandom(university.getFaculties());
+    private static final Function<Faculty, Group> randomGroupGenerator = faculty -> getRandom(faculty.getGroups());
+    private static final Function<Group, Student> randomStudentGenerator = group -> getRandom(group.getStudents());
+    private static final Function<Student, Subject> randomSubjectGenerator = student -> getRandom(student.getSubjects());
+
 
     public static void main(String[] args) {
         University university = new University();
@@ -27,82 +31,54 @@ public class UniversityService {
                                 }
                         )));
 
-        Student student = university.getFaculties().get(0).getGroups().get(0).getStudents().get(0);
-        System.out.println(calculateAvgAllSubjects(student));
-        System.out.println(calculateAvgConcrete(university, university.getFaculties().get(0),
-                university.getFaculties().get(0).getGroups().get(0),
-                university.getFaculties().get(0).getGroups().get(0).getStudents().get(0).getSubjects().get(0)));
-        System.out.println(calculateAvgForUniversity(university));
+        Student student = randomStudentGenerator.apply(
+                randomGroupGenerator.apply(
+                        randomFacultyGenerator.apply(university)
+                )
+        );
+
+        System.out.println(student.calculateAvgAllSubjects());
+
+        Faculty faculty = randomFacultyGenerator.apply(university);
+        Group group = randomGroupGenerator.apply(faculty);
+        Subject subject = randomSubjectGenerator.apply(
+                randomStudentGenerator.apply(group)
+
+        );
+
+
+        System.out.println(university.calculateAvgConcrete(faculty, group, subject));
+        System.out.println(university.calculateAvgForUniversity());
 
         try {
             simulateExceptionForIncorrectGrade(university);
-        } catch (ArithmeticException exception) {
-            System.out.println("ArithmeticException was caught!");
+        } catch (Grade.GradeException exception) {
+            System.out.println("GradeException was caught!");
         }
 
         try {
             simulateExceptionForEmptySubjects(university);
-        } catch (NoSuchElementException exception) {
-            System.out.println("NoSuchElementException was caught for simulateExceptionForEmptySubjects!");
+        } catch (Subject.SubjectException exception) {
+            System.out.println("SubjectException was caught for simulateExceptionForEmptySubjects!");
         }
 
         try {
             simulateExceptionForEmptyStudents(university);
-        } catch (NoSuchElementException exception) {
-            System.out.println("NoSuchElementException was caught for simulateExceptionForEmptyStudents!");
+        } catch (Student.StudentException exception) {
+            System.out.println("StudentException was caught for simulateExceptionForEmptyStudents!");
         }
 
         try {
             simulateExceptionForEmptyGroups(university);
-        } catch (NoSuchElementException exception) {
-            System.out.println("NoSuchElementException was caught for simulateExceptionForEmptyGroups!");
+        } catch (Group.GroupException exception) {
+            System.out.println("GroupException was caught for simulateExceptionForEmptyGroups!");
         }
 
         try {
             simulateExceptionForEmptyFaculties();
-        } catch (NoSuchElementException exception) {
-            System.out.println("NoSuchElementException was caught for simulateExceptionForEmptyFaculties!");
+        } catch (Faculty.FacultyException exception) {
+            System.out.println("FacultyException was caught for simulateExceptionForEmptyFaculties!");
         }
-    }
-
-    private static double calculateAvgAllSubjects(Student student) {
-        return student.getGrades().stream()
-                .mapToInt(Grade::getGrade)
-                .average()
-                .getAsDouble();
-    }
-
-
-    private static double calculateAvgConcrete(University university, Faculty faculty, Group group, Subject subject) {
-        Faculty faculty1 = university.getFaculties().stream()
-                .filter(f -> f.getFacultyId().equals(faculty.getFacultyId()))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(String.format("Faculty with ID %s is not find", faculty.getFacultyId())));
-        Group group1 = faculty1.getGroups().stream()
-                .filter(g -> g.getGroupId().equals(group.getGroupId()))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(String.format("Group with ID %s is not find", group.getGroupId())));
-        return group1.getStudents().stream()
-                .map(Student::getGrades)
-                .flatMap(Collection::stream)
-                .filter(g -> g.getSubject().getSubjectId().equals(subject.getSubjectId()))
-                .mapToInt(Grade::getGrade)
-                .average()
-                .getAsDouble();
-    }
-
-
-    private static double calculateAvgForUniversity(University university) {
-        return university.getFaculties().stream()
-                .map(Faculty::getGroups)
-                .flatMap(Collection::stream)
-                .map(Group::getStudents)
-                .flatMap(Collection::stream)
-                .map(Student::getGrades)
-                .flatMap(Collection::stream)
-                .mapToInt(Grade::getGrade)
-                .average()
-                .getAsDouble();
     }
 
     public static void simulateExceptionForIncorrectGrade(University university) {
@@ -135,17 +111,24 @@ public class UniversityService {
                 .getGroups()
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("List of groups is empty")));
+                .orElseThrow(() -> new Group.GroupException("List of groups is empty")));
     }
 
     public static void simulateExceptionForEmptyFaculties() {
         new University().getFaculties()
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("List of faculties is empty"));
+                .orElseThrow(() -> new Faculty.FacultyException("List of faculties is empty"));
     }
 
     public static int getRandomGrade(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
+    }
+
+    public static <E> E getRandom(Collection<E> collection) {
+        return collection.stream()
+                .skip((long) (collection.size() * Math.random()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Collection is empty"));
     }
 }

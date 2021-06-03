@@ -1,17 +1,26 @@
 package universitymodel;
 
+import exception.BaseException;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class Student {
 
     private List<Subject> subjects = new ArrayList<>();
     private final List<Grade> grades = new ArrayList<>();
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public double calculateAvgAllSubjects() {
+        return getGrades().stream()
+                .mapToInt(Grade::getGrade)
+                .average()
+                .getAsDouble();
+    }
+
     public void giveGrade(Subject subject, int grade) {
         if (grade < 0 || grade > 10) {
-            throw new ArithmeticException(String.format("Grade %s is out of range %s!!!", grade, "from 0 to 10"));
+            throw new Grade.GradeException(String.format("Grade %s is out of range %s!!!", grade, "from 0 to 10"));
         }
         this.grades.add(new Grade(subject, grade));
     }
@@ -21,14 +30,21 @@ public class Student {
     }
 
     public void assignSubject(List<Subject> subjects) {
+
         this.subjects = subjects;
     }
 
     public List<Subject> getSubjects() {
         if (subjects.isEmpty()) {
-            throw new NoSuchElementException("List of subjects is empty");
+            throw new Subject.SubjectException("List of subjects is empty");
         }
         return subjects;
+    }
+
+    public static class StudentException extends BaseException {
+        public StudentException(String message) {
+            super(message);
+        }
     }
 }
 

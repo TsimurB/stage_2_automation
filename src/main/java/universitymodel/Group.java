@@ -1,5 +1,8 @@
 package universitymodel;
 
+import exception.BaseException;
+
+import java.rmi.StubNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,12 +28,18 @@ public class Group {
 
     public List<Student> getStudents() {
         if (students.isEmpty()) {
-            throw new NoSuchElementException("List of students is empty");
+            throw new Student.StudentException("List of students is empty");
         }
         return students;
     }
 
     public String getGroupId() {
         return groupId;
+    }
+
+    public static class GroupException extends BaseException {
+        public GroupException(String message) {
+            super(message);
+        }
     }
 }
