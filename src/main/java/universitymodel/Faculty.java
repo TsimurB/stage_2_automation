@@ -1,5 +1,8 @@
 package universitymodel;
 
+import exception.GroupException;
+import exception.SubjectException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +21,9 @@ public class Faculty {
     }
 
     public List<Group> getGroups() {
+        if (groups.isEmpty()) {
+            throw new GroupException("List of groups is empty");
+        }
         return groups;
     }
 

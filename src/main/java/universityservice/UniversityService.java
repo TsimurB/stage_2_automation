@@ -3,11 +3,10 @@ package universityservice;
 import exception.*;
 import universitymodel.*;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import static universityservice.DataGenerator.*;
+import static universityservice.Util.getRandomGrade;
 
 public class UniversityService {
 
@@ -15,11 +14,6 @@ public class UniversityService {
     private static final int NUMBER_OF_STUDENTS = 10;
     private static final int NUMBER_OF_FACULTIES = 3;
     private static final int NUMBER_OF_GROUPS = 4;
-    private static final Function<University, Faculty> randomFacultyGenerator = university -> getRandom(university.getFaculties());
-    private static final Function<Faculty, Group> randomGroupGenerator = faculty -> getRandom(faculty.getGroups());
-    private static final Function<Group, Student> randomStudentGenerator = group -> getRandom(group.getStudents());
-    private static final Function<Student, Subject> randomSubjectGenerator = student -> getRandom(student.getSubjects());
-
 
     public static void main(String[] args) {
         University university = new University();
@@ -107,28 +101,10 @@ public class UniversityService {
     }
 
     public static void simulateExceptionForEmptyGroups(University university) {
-        createFaculties(university, NUMBER_OF_FACULTIES).forEach(faculty -> faculty
-                .getGroups()
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new GroupException("List of groups is empty")));
+        createFaculties(university, NUMBER_OF_FACULTIES).get(0).getGroups();
     }
 
     public static void simulateExceptionForEmptyFaculties() {
-        new University().getFaculties()
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new FacultyException("List of faculties is empty"));
-    }
-
-    public static int getRandomGrade(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
-    }
-
-    public static <E> E getRandom(Collection<E> collection) {
-        return collection.stream()
-                .skip((long) (collection.size() * Math.random()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Collection is empty"));
+        new University().getFaculties();
     }
 }

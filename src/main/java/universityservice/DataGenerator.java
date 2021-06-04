@@ -3,10 +3,19 @@ package universityservice;
 import universitymodel.*;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static universityservice.Util.getRandom;
+
 public class DataGenerator {
+
+    public static final Function<University, Faculty> randomFacultyGenerator = university -> getRandom(university.getFaculties());
+    public static final Function<Faculty, Group> randomGroupGenerator = faculty -> getRandom(faculty.getGroups());
+    public static final Function<Group, Student> randomStudentGenerator = group -> getRandom(group.getStudents());
+    public static final Function<Student, Subject> randomSubjectGenerator = student -> getRandom(student.getSubjects());
+
     public static List<Student> assignStudents(Group group, int numberOfStudents) {
         List<Student> students = Stream.generate(Student::new)
                 .limit(numberOfStudents)

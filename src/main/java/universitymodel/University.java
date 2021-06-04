@@ -1,6 +1,8 @@
 package universitymodel;
 
+import exception.FacultyException;
 import exception.StudentException;
+import exception.SubjectException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +55,9 @@ public class University {
                 .getAsDouble();
     }
     public List<Faculty> getFaculties() {
+        if (faculties.isEmpty()) {
+            throw new FacultyException("List of faculties is empty");
+        }
         return faculties;
     }
 
