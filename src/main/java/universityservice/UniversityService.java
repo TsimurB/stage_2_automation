@@ -1,10 +1,13 @@
 package universityservice;
 
+import exception.*;
 import universitymodel.*;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+
+import static universityservice.DataGenerator.*;
 
 public class UniversityService {
 
@@ -20,12 +23,11 @@ public class UniversityService {
 
     public static void main(String[] args) {
         University university = new University();
-        List<Subject> subjects = university.createSubject(NUMBER_OF_SUBJECTS);
-        university.createFaculties(NUMBER_OF_FACULTIES).forEach(faculty -> faculty
-                .createGroups(NUMBER_OF_GROUPS)
-                .forEach(group -> group.assignStudents(NUMBER_OF_STUDENTS)
+        List<Subject> subjects = createSubject(NUMBER_OF_SUBJECTS);
+        createFaculties(university, NUMBER_OF_FACULTIES).forEach(faculty -> createGroups(faculty, NUMBER_OF_GROUPS)
+                .forEach(group -> assignStudents(group, NUMBER_OF_STUDENTS)
                         .forEach(student -> {
-                                    student.assignSubject(subjects);
+                                    student.setSubjects(subjects);
                                     student.getSubjects()
                                             .forEach(subject -> student.giveGrade(subject, getRandomGrade(0, 10)));
                                 }
@@ -52,41 +54,41 @@ public class UniversityService {
 
         try {
             simulateExceptionForIncorrectGrade(university);
-        } catch (Grade.GradeException exception) {
+        } catch (GradeException exception) {
             System.out.println("GradeException was caught!");
         }
 
         try {
             simulateExceptionForEmptySubjects(university);
-        } catch (Subject.SubjectException exception) {
+        } catch (SubjectException exception) {
             System.out.println("SubjectException was caught for simulateExceptionForEmptySubjects!");
         }
 
         try {
             simulateExceptionForEmptyStudents(university);
-        } catch (Student.StudentException exception) {
+        } catch (StudentException exception) {
             System.out.println("StudentException was caught for simulateExceptionForEmptyStudents!");
         }
 
         try {
             simulateExceptionForEmptyGroups(university);
-        } catch (Group.GroupException exception) {
+        } catch (GroupException exception) {
             System.out.println("GroupException was caught for simulateExceptionForEmptyGroups!");
         }
 
         try {
             simulateExceptionForEmptyFaculties();
-        } catch (Faculty.FacultyException exception) {
+        } catch (FacultyException exception) {
             System.out.println("FacultyException was caught for simulateExceptionForEmptyFaculties!");
         }
     }
 
     public static void simulateExceptionForIncorrectGrade(University university) {
-        university.createFaculties(NUMBER_OF_FACULTIES)
-                .forEach(faculty -> faculty.createGroups(NUMBER_OF_GROUPS)
-                        .forEach(group -> group.assignStudents(NUMBER_OF_STUDENTS)
+        createFaculties(university, NUMBER_OF_FACULTIES)
+                .forEach(faculty -> createGroups(faculty, NUMBER_OF_GROUPS)
+                        .forEach(group -> assignStudents(group, NUMBER_OF_STUDENTS)
                                 .forEach(student -> {
-                                            student.assignSubject(university.createSubject(100));
+                                            student.setSubjects(createSubject(100));
                                             student.getSubjects()
                                                     .forEach(subject -> student.giveGrade(subject, getRandomGrade(-100, 100)));
                                         }
@@ -94,31 +96,29 @@ public class UniversityService {
     }
 
     public static void simulateExceptionForEmptySubjects(University university) {
-        university.createFaculties(NUMBER_OF_FACULTIES).forEach(faculty -> faculty
-                .createGroups(NUMBER_OF_GROUPS)
-                .forEach(group -> group.assignStudents(NUMBER_OF_STUDENTS)
+        createFaculties(university, NUMBER_OF_FACULTIES).forEach(faculty -> createGroups(faculty, NUMBER_OF_GROUPS)
+                .forEach(group -> assignStudents(group, NUMBER_OF_STUDENTS)
                         .forEach(Student::getSubjects)));
     }
 
     public static void simulateExceptionForEmptyStudents(University university) {
-        university.createFaculties(NUMBER_OF_FACULTIES).forEach(faculty -> faculty
-                .createGroups(NUMBER_OF_GROUPS)
+        createFaculties(university, NUMBER_OF_FACULTIES).forEach(faculty -> createGroups(faculty, NUMBER_OF_GROUPS)
                 .forEach(Group::getStudents));
     }
 
     public static void simulateExceptionForEmptyGroups(University university) {
-        university.createFaculties(NUMBER_OF_FACULTIES).forEach(faculty -> faculty
+        createFaculties(university, NUMBER_OF_FACULTIES).forEach(faculty -> faculty
                 .getGroups()
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new Group.GroupException("List of groups is empty")));
+                .orElseThrow(() -> new GroupException("List of groups is empty")));
     }
 
     public static void simulateExceptionForEmptyFaculties() {
         new University().getFaculties()
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new Faculty.FacultyException("List of faculties is empty"));
+                .orElseThrow(() -> new FacultyException("List of faculties is empty"));
     }
 
     public static int getRandomGrade(int min, int max) {

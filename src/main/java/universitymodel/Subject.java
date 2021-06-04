@@ -1,7 +1,5 @@
 package universitymodel;
 
-import exception.BaseException;
-
 import java.util.UUID;
 
 public class Subject {
@@ -14,11 +12,5 @@ public class Subject {
 
     public String getSubjectId() {
         return subjectId;
-    }
-
-    public static class SubjectException extends BaseException {
-        public SubjectException(String message) {
-            super(message);
-        }
     }
 }

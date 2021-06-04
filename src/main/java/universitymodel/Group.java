@@ -1,14 +1,10 @@
 package universitymodel;
 
-import exception.BaseException;
+import exception.StudentException;
 
-import java.rmi.StubNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Group {
 
@@ -19,16 +15,9 @@ public class Group {
         groupId = UUID.randomUUID().toString();
     }
 
-    public List<Student> assignStudents(int numberOfStudents) {
-        this.students = Stream.generate(Student::new)
-                .limit(numberOfStudents)
-                .collect(Collectors.toList());
-        return students;
-    }
-
     public List<Student> getStudents() {
         if (students.isEmpty()) {
-            throw new Student.StudentException("List of students is empty");
+            throw new StudentException("List of students is empty");
         }
         return students;
     }
@@ -37,9 +26,7 @@ public class Group {
         return groupId;
     }
 
-    public static class GroupException extends BaseException {
-        public GroupException(String message) {
-            super(message);
-        }
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 }

@@ -1,6 +1,7 @@
 package universitymodel;
 
-import exception.BaseException;
+import exception.GradeException;
+import exception.SubjectException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class Student {
 
     public void giveGrade(Subject subject, int grade) {
         if (grade < 0 || grade > 10) {
-            throw new Grade.GradeException(String.format("Grade %s is out of range %s!!!", grade, "from 0 to 10"));
+            throw new GradeException(String.format("Grade %s is out of range %s!!!", grade, "from 0 to 10"));
         }
         this.grades.add(new Grade(subject, grade));
     }
@@ -29,22 +30,15 @@ public class Student {
         return grades;
     }
 
-    public void assignSubject(List<Subject> subjects) {
-
+    public void setSubjects(List<Subject> subjects) {
         this.subjects = subjects;
     }
 
     public List<Subject> getSubjects() {
         if (subjects.isEmpty()) {
-            throw new Subject.SubjectException("List of subjects is empty");
+            throw new SubjectException("List of subjects is empty");
         }
         return subjects;
-    }
-
-    public static class StudentException extends BaseException {
-        public StudentException(String message) {
-            super(message);
-        }
     }
 }
 

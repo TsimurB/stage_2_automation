@@ -1,5 +1,7 @@
 package universitymodel;
 
+import exception.StudentException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +18,14 @@ public class University {
         return getFaculties().stream()
                 .map(Faculty::getGroups)
                 .flatMap(Collection::stream)
-                .map(Group::getStudents)
+                .map(group -> {
+                    try {
+                        return group.getStudents();
+                    } catch (StudentException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
                 .flatMap(Collection::stream)
                 .map(Student::getGrades)
                 .flatMap(Collection::stream)
@@ -26,7 +35,7 @@ public class University {
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public double calculateAvgConcrete(Faculty faculty, Group group, Subject subject) {
+    public double calculateAvgConcrete(Faculty faculty, Group group, Subject subject) throws StudentException {
         Faculty faculty1 = getFaculties().stream()
                 .filter(f -> f.getFacultyId().equals(faculty.getFacultyId()))
                 .findFirst()
@@ -43,21 +52,11 @@ public class University {
                 .average()
                 .getAsDouble();
     }
-
-    public List<Faculty> createFaculties(int numberOfFaculties) {
-        this.faculties = Stream.generate(Faculty::new)
-                .limit(numberOfFaculties)
-                .collect(Collectors.toList());
-        return faculties;
-    }
-
-    public List<Subject> createSubject(int numberOfSubject) {
-        return Stream.generate(Subject::new)
-                .limit(numberOfSubject)
-                .collect(Collectors.toList());
-    }
-
     public List<Faculty> getFaculties() {
         return faculties;
+    }
+
+    public void setFaculties(List<Faculty> faculties) {
+        this.faculties = faculties;
     }
 }
