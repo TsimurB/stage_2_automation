@@ -2,14 +2,11 @@ package universitymodel;
 
 import exception.FacultyException;
 import exception.StudentException;
-import exception.SubjectException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class University {
 

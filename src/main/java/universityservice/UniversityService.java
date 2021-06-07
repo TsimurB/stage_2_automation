@@ -39,7 +39,6 @@ public class UniversityService {
         Group group = randomGroupGenerator.apply(faculty);
         Subject subject = randomSubjectGenerator.apply(
                 randomStudentGenerator.apply(group)
-
         );
 
 

@@ -24,7 +24,6 @@ public class DataGenerator {
         return students;
     }
 
-
     public static List<Faculty> createFaculties(University university, int numberOfFaculties) {
         List<Faculty> faculties = Stream.generate(Faculty::new)
                 .limit(numberOfFaculties)
@@ -33,11 +32,6 @@ public class DataGenerator {
         return faculties;
     }
 
-    public static List<Subject> createSubject(int numberOfSubject) {
-        return Stream.generate(Subject::new)
-                .limit(numberOfSubject)
-                .collect(Collectors.toList());
-    }
     public static List<Group> createGroups(Faculty faculty, int numberOfGroups) {
         List<Group> groups = Stream.generate(Group::new)
                 .limit(numberOfGroups)
@@ -46,4 +40,9 @@ public class DataGenerator {
         return groups;
     }
 
+    public static List<Subject> createSubject(int numberOfSubject) {
+        return Stream.generate(Subject::new)
+                .limit(numberOfSubject)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,7 +1,6 @@
 package universitymodel;
 
 import exception.GroupException;
-import exception.SubjectException;
 
 import java.util.ArrayList;
 import java.util.List;
