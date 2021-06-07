@@ -16,13 +16,6 @@ public class DataGenerator {
     public static final Function<Group, Student> randomStudentGenerator = group -> getRandom(group.getStudents());
     public static final Function<Student, Subject> randomSubjectGenerator = student -> getRandom(student.getSubjects());
 
-    public static List<Student> assignStudents(Group group, int numberOfStudents) {
-        List<Student> students = Stream.generate(Student::new)
-                .limit(numberOfStudents)
-                .collect(Collectors.toList());
-        group.setStudents(students);
-        return students;
-    }
 
     public static List<Faculty> createFaculties(University university, int numberOfFaculties) {
         List<Faculty> faculties = Stream.generate(Faculty::new)
@@ -38,6 +31,14 @@ public class DataGenerator {
                 .collect(Collectors.toList());
         faculty.setGroups(groups);
         return groups;
+    }
+
+    public static List<Student> assignStudents(Group group, int numberOfStudents) {
+        List<Student> students = Stream.generate(Student::new)
+                .limit(numberOfStudents)
+                .collect(Collectors.toList());
+        group.setStudents(students);
+        return students;
     }
 
     public static List<Subject> createSubject(int numberOfSubject) {
